@@ -1,8 +1,3 @@
----
-output:
-  html_document: default
-  pdf_document: default
----
 
  <!-- badges: start -->
   [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
