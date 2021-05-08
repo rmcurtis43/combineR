@@ -1,0 +1,21 @@
+Package: combineR
+Type: Package
+Title: Package for Gathering NFL Combine Data
+Version: 0.1.0
+Author: Ryan Curtis
+Maintainer: Ryan Curtis <rmcurtis43@yahoo.com>
+Description: This package is used for gathering 2000 - current NFL combine data from Pro-Football-Reference. Pro-Football-Reference utilizes Official NFL data for current NFL seasons. The user can pull single season data by simply entering a year or data between two seasons by inputing start_year and end_year.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
+    tidyr,
+    purrr,
+    rvest,
+    janitor,
+    xml2,
+    janitor,
+    stringr
