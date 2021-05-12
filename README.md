@@ -159,3 +159,14 @@ A BibTeX entry for LaTeX users is
 ```
 
 **{combineR}** is under development and may change over time.   
+
+
+
+
+
+***
+
+## Visualizations
+
+
+You can check out some **{combineR}** visualizations [here](https://github.com/rmcurtis43/combineR-visuals)
