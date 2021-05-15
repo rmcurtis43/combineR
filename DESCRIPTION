@@ -4,7 +4,7 @@ Title: Package for Gathering and Exploring NFL Combine Data
 Version: 0.1.0
 Author: Ryan Curtis
 Maintainer: Ryan Curtis <rmcurtis43@yahoo.com>
-Description: This package is used for gathering and explorign 2000 - current NFL combine data from Pro-Football-Reference. Pro-Football-Reference utilizes Official NFL data for current NFL seasons.
+Description: This package is used for gathering and exploring 2000 - current NFL combine data from Pro-Football-Reference. Pro-Football-Reference utilizes Official NFL data for current NFL seasons.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
