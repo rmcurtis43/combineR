@@ -6,7 +6,7 @@
 
 
 # {combineR}
-An R package to gather NFL Draft Combine data.
+An R package to gather and explore NFL Draft Combine data.
 
 <img src="man/images/combineRsticker.png" align="right" width="300" />
 
@@ -16,7 +16,7 @@ An R package to gather NFL Draft Combine data.
 
 ## What is combineR
 
-**{combineR}** is a package developed to easily gather over 20 years of NFL Draft Combine data from [Pro Football Reference.](https://www.pro-football-reference.com/)
+**{combineR}** is a package developed to easily gather and explore over 20 years of NFL Draft Combine data from [Pro Football Reference](https://www.pro-football-reference.com/). The aim is to aid sports scientist, performance practitioners and football enthusiasts in developing and refining R skills, as well as, suppport athletic development and innovation.
 
 ***
 
@@ -71,10 +71,7 @@ Or you can enter a start_year (e.g., `2019`) and and end_year (e.g. `2021`) to g
 ``` r
 library(combineR)
 
-pull_combine_data(
-start_year = 2019,
-end_year = 2021
-)
+pull_combine_data(start_year = 2019, end_year = 2021)
 
 OR
 
@@ -109,10 +106,10 @@ pull_combine_data(2019, 2021)
 
 ***
 
-## Data Dictionary
+## `pull_combine_data()` Dictionary
 
 
-The current tibble returns 20 fields:
+The current tibble from `pull_combine_data()` has 20 fields:
 
 * player (Player Name, character)
 * draft_year (Combine Draft Year, numeric)
@@ -121,9 +118,9 @@ The current tibble returns 20 fields:
 * draft_round (Round Drafted, numeric)
 * draft_overall_pick (Overall Pick in Draft Year, numeric)
 * position (Position supplid by Pro Football Reference, character)
-  *"QB", "DL", "CB", "OL", "LB", "WR", "RB", "S", "TE", "LS", "K", "P", "DB", "DE", "OLB", "OT", "C", "DT", "NT","PK", "FB", "T"
+  -"QB", "DL", "CB", "OL", "LB", "WR", "RB", "S", "TE", "LS", "K", "P", "DB", "DE", "OLB", "OT", "C", "DT", "NT","PK", "FB", "T"
 * position2 (Condensed Position Grouping, character)
-  *"QB", "DL", "DB", "OL", "LB", "WR", "RB", "TE", "LS", "PK"
+  -"QB", "DL", "DB", "OL", "LB", "WR", "RB", "TE", "LS", "PK"
 * height_in (Height in inches, numeric)
 * height_ft_in (Height in feet and inches, character)
 * weight_lbs (Weight in pounds, numeric)
@@ -136,6 +133,58 @@ The current tibble returns 20 fields:
 * x3cone (3 Cone Agility Drill in seconds, numeric)
 * shuttle (Shuttle Drill in seconds, numeric)
 * x40yd (40 yard dash in seconds, numeric)
+
+
+***
+
+## `percentile_table()`
+
+
+The `percentile_table()` funtion was written to provide practitioners with practical scores for benchmarking their athletes performance. Benchmarking is critical to the athlete evaluation process as it provides objective feedback as to how an athlete's physical performance or anthropometrics compare to NFL Combine norms.
+
+The function accepts a single test (e.g. test = '40yd'), followed by a list of positions to be included in the table (e.g. positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR')). Please note tests and positions must be wrapped in parentheses, also the 'positions' input requires a string of characters between c() (i.e., indicates a vector of positions to include in the table).
+
+Accepted inputs for **test** include:
+
+* Height
+* Weight
+* Vertical Jump
+* Broad Jump
+* Bench
+* 3cone
+* Shuttle
+* 40yd
+
+
+Accepted inputs for **positions** include any combination of:
+
+* DB
+* DL
+* LB
+* OL
+* QB
+* RB
+* TE
+* WR
+* PK
+* LS
+
+
+
+Please see the example below.
+
+```{r}
+percentile_table(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR'))
+```
+<img src="man/images/percentile_table_example.png" align = center; width="500" />
+
+
+You can create a table with a single position as well...
+```{r}
+percentile_table(test = 'Broad Jump', positions = c('LB'))
+```
+<img src="man/images/percentile_table_example_single.png" align = center; width="500" />
+
 
 
 ***
@@ -158,10 +207,10 @@ A BibTeX entry for LaTeX users is
   }
 ```
 
+
+***
+
 **{combineR}** is under development and may change over time.   
-
-
-
 
 
 ***
