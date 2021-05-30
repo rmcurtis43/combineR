@@ -9,16 +9,15 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' percentile_table (
+#' benchmark_table (
 #' test = '40yd',
 #' positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR')
 #' )
 #' }
 
 
-percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')){
+benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')){
 
-  # pull combineR data
   data <- pull_combine_data()
 
   percentile_data <- data %>%
@@ -39,7 +38,7 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     ), 0))
 
 
-  p <- c(0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95)
+  p <- c(0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
   p_names <- map_chr(p, ~paste0(.x*100, "th"))
   p_funs <- map(p, ~partial(quantile, probs = .x, na.rm = TRUE)) %>%
     set_names(nm = p_names)
@@ -73,7 +72,7 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
       Percentile == '60th' ~ 5,
       Percentile == '80th' ~ 6,
       Percentile == '90th' ~ 7,
-      Percentile == '95th' ~ 8,
+      Percentile == '100th' ~ 8,
       TRUE ~ as.numeric(NA)
     )) %>%
     group_by(position, Test) %>%
@@ -81,7 +80,7 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     select(-rownum) %>%
     ungroup()
 
-  ord <- c('5th', '10th', '20th', '40th', '60th', '80th', '90th', '95th')
+  ord <- c('5th', '10th', '20th', '40th', '60th', '80th', '90th', '100th')
 
   metric <- ifelse(test == 'Height', '[in]',
                    ifelse(test == 'Weight', '[lbs]',
@@ -94,7 +93,6 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     filter(Test == test) %>%
     mutate(value = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), round(value,0), round(value, 2))) %>%
     pivot_wider(names_from = c(position), values_from = value) %>%
-    #mutate_if(is.numeric, round, digits=2) %>%
     mutate(Class = case_when(
       Percentile == '5th' ~ 'Bad',
       Percentile == '10th' ~ 'Very Poor',
@@ -103,7 +101,7 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
       Percentile == '60th' ~ 'Good',
       Percentile == '80th' ~ 'Very Good',
       Percentile == '90th' ~ 'Excellent',
-      Percentile == '95th' ~ 'Elite',
+      Percentile == '100th' ~ 'World-Leading',
       TRUE ~ as.character(NA)
     )) %>%
     mutate(rownum = case_when(
@@ -114,7 +112,7 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
       Percentile == '60th' ~ 5,
       Percentile == '80th' ~ 6,
       Percentile == '90th' ~ 7,
-      Percentile == '95th' ~ 8,
+      Percentile == '100th' ~ 8,
       TRUE ~ as.numeric(NA)
     )) %>%
     arrange(desc(rownum)) %>%
@@ -140,8 +138,8 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     ) %>%
     tab_style(
       style = list(
-        cell_fill(color = "darkgreen"),
-        cell_text(color = "white")
+        cell_fill(color = "#FAE100"),
+        cell_text(color = "black")
       ),
       locations = cells_body(
         columns = vars(Percentile, Class, !!!syms(positions)),
@@ -149,7 +147,7 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     ) %>%
     tab_style(
       style = list(
-        cell_fill(color = "#00CC00"),
+        cell_fill(color = "darkgreen"),
         cell_text(color = "white")
       ),
       locations = cells_body(
@@ -158,8 +156,8 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     ) %>%
     tab_style(
       style = list(
-        cell_fill(color = "#b2ff66"),
-        cell_text(color = "black")
+        cell_fill(color = "#00CC00"),
+        cell_text(color = "white")
       ),
       locations = cells_body(
         columns = vars(Percentile, Class, !!!syms(positions)),
@@ -243,7 +241,10 @@ percentile_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL'
     columns = gt::everything()
   )
 
-
   print(table_perc)
 
+
+
+
 }
+

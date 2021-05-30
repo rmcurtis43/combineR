@@ -137,10 +137,10 @@ The current tibble from `pull_combine_data()` has 20 fields:
 
 ***
 
-## `percentile_table()`
+## `benchmark_table()`
 
 
-The `percentile_table()` funtion was written to provide practitioners with practical scores for benchmarking their athletes performance. Benchmarking is critical to the athlete evaluation process as it provides objective feedback as to how an athlete's physical performance or anthropometrics compare to NFL Combine norms.
+The `benchmark_table()` funtion was written to provide practitioners with practical scores for benchmarking their athletes performance. Benchmarking is critical to the athlete evaluation process as it provides objective feedback as to how an athlete's physical performance or anthropometrics compare to NFL Combine norms.
 
 The function accepts a single test (e.g. test = '40yd'), followed by a list of positions to be included in the table (e.g. positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR')). Please note tests and positions must be wrapped in parentheses, also the 'positions' input requires a string of characters between c() (i.e., indicates a vector of positions to include in the table).
 
@@ -174,14 +174,14 @@ Accepted inputs for **positions** include any combination of:
 Please see the example below.
 
 ```{r}
-percentile_table(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR'))
+benchmark_table(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR'))
 ```
 <img src="man/images/percentile_table_example.png" align = center; width="500" />
 
 
 You can create a table with a single position as well...
 ```{r}
-percentile_table(test = 'Broad Jump', positions = c('LB'))
+benchmark_table(test = 'Broad Jump', positions = c('LB'))
 ```
 <img src="man/images/percentile_table_example_single.png" align = center; width="500" />
 
