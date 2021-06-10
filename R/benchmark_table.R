@@ -18,6 +18,8 @@
 
 benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')){
 
+
+  # pull combineR data
   data <- pull_combine_data()
 
   percentile_data <- data %>%
@@ -32,6 +34,7 @@ benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL',
                   sd = sd(Value),
                   count = n()
                 ), c('position', 'Test')) %>%
+    #filter(!position %in% c('PK', 'LS')) %>%
     mutate(percentile = round((
       pnorm(Value, mean = mean, sd = sd) *
         100
@@ -88,31 +91,167 @@ benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL',
                                  ifelse(test == 'Bench', '[reps @ 225lbs]',
                                         '[s]'))))
 
-  ex <- percentile_data %>%
-    filter(position %in% positions) %>%
-    filter(Test == test) %>%
-    mutate(value = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), round(value,0), round(value, 2))) %>%
-    pivot_wider(names_from = c(position), values_from = value) %>%
-    mutate(Class = case_when(
-      Percentile == '5th' ~ 'Bad',
-      Percentile == '10th' ~ 'Very Poor',
-      Percentile == '20th' ~ 'Poor',
-      Percentile == '40th' ~ 'Fair',
-      Percentile == '60th' ~ 'Good',
-      Percentile == '80th' ~ 'Very Good',
-      Percentile == '90th' ~ 'Excellent',
-      Percentile == '100th' ~ 'World-Leading',
+  ex_rev <- percentile_data %>%
+    #filter(position %in% positions) %>%
+    filter(position %in% c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')) %>%
+
+    #filter(Test == test) %>%
+    filter(Test %in% c('40yd', 'Shuttle', '3cone')) %>%
+    bind_rows(
+      percentile_data %>%
+        filter(position %in% c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')) %>%
+        filter(Test %in% c('40yd', 'Shuttle', '3cone')) %>%
+        filter(Percentile == '10th') %>%
+        mutate(Percentile = '<10')
+    ) %>%
+    filter(Percentile != '5th') %>%
+    mutate(Percentile = case_when(
+      Percentile == '<10' ~ '<10',
+      Percentile == '10th' ~ '10-19',
+      Percentile == '20th' ~ '20-39',
+      Percentile == '40th' ~ '40-59',
+      Percentile == '60th' ~ '60-79',
+      Percentile == '80th' ~ '80-89',
+      Percentile == '90th' ~ '90-99',
+      Percentile == '100th' ~ '100',
       TRUE ~ as.character(NA)
     )) %>%
     mutate(rownum = case_when(
-      Percentile == '5th' ~ 1,
-      Percentile == '10th' ~ 2,
-      Percentile == '20th' ~ 3,
-      Percentile == '40th' ~ 4,
-      Percentile == '60th' ~ 5,
-      Percentile == '80th' ~ 6,
-      Percentile == '90th' ~ 7,
-      Percentile == '100th' ~ 8,
+      Percentile == '<10' ~ 1,
+      Percentile == '10-19' ~ 2,
+      Percentile == '20-39' ~ 3,
+      Percentile == '40-59' ~ 4,
+      Percentile == '60-79' ~ 5,
+      Percentile == '80-89' ~ 6,
+      Percentile == '90-99' ~ 7,
+      Percentile == '100' ~ 8,
+      TRUE ~ as.numeric(NA)
+    )) %>%
+    arrange(Test, position, rownum) %>%
+    select(-rownum) %>%
+    mutate(value = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), round(value,0), round(value, 2))) %>%
+    mutate(value_m1 = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), value-1, value-0.01)) %>%
+    mutate(value_p1 = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), value+1, value+0.01)) %>%
+    group_by(Test, position) %>%
+    mutate(value_lead = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), lead(value)-1, format(round(lead(value)-0.01, 2), nsmall = 2))) %>%
+    mutate(value_m1_lead = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), lead(value_m1), format(round(lead(value_m1), 2), nsmall = 2))) %>%
+    mutate(value_p1_lead = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), lead(value_p1), format(round(lead(value_p1), 2), nsmall = 2))) %>%
+    mutate(value_final = case_when(
+      Percentile == '<10' ~ paste0('>', value),
+      Percentile %in% c('10-19', '20-39', '40-59', '60-79', '80-89', '90-99') ~ paste0(format(value_p1_lead, nsmall = 2), '-', format(value, nsmall = 2)),
+      Percentile == '100' ~ paste0('\u2264', value),
+      TRUE ~ as.character(NA)
+    )) %>%
+    mutate(rownum = case_when(
+      Percentile == '<10' ~ 1,
+      Percentile == '10-19' ~ 2,
+      Percentile == '20-39' ~ 3,
+      Percentile == '40-59' ~ 4,
+      Percentile == '60-79' ~ 5,
+      Percentile == '80-89' ~ 6,
+      Percentile == '90-99' ~ 7,
+      Percentile == '100' ~ 8,
+      TRUE ~ as.numeric(NA)
+    )) %>%
+    arrange(Test, position, desc(rownum)) %>%
+    select(-rownum) %>%
+    mutate(across(everything(), as.character))
+
+  ex_fwd <- percentile_data %>%
+    #filter(position %in% positions) %>%
+    filter(position %in% c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')) %>%
+
+    #filter(Test == test) %>%
+    filter(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench')) %>%
+    bind_rows(
+      percentile_data %>%
+        filter(position %in% c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR', 'PK', 'LS')) %>%
+        filter(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench')) %>%
+        filter(Percentile == '10th') %>%
+        mutate(Percentile = '<10')
+    ) %>%
+    filter(Percentile != '5th') %>%
+    mutate(Percentile = case_when(
+      Percentile == '<10' ~ '<10',
+      Percentile == '10th' ~ '10-19',
+      Percentile == '20th' ~ '20-39',
+      Percentile == '40th' ~ '40-59',
+      Percentile == '60th' ~ '60-79',
+      Percentile == '80th' ~ '80-89',
+      Percentile == '90th' ~ '90-99',
+      Percentile == '100th' ~ '100',
+      TRUE ~ as.character(NA)
+    )) %>%
+    mutate(rownum = case_when(
+      Percentile == '<10' ~ 1,
+      Percentile == '10-19' ~ 2,
+      Percentile == '20-39' ~ 3,
+      Percentile == '40-59' ~ 4,
+      Percentile == '60-79' ~ 5,
+      Percentile == '80-89' ~ 6,
+      Percentile == '90-99' ~ 7,
+      Percentile == '100' ~ 8,
+      TRUE ~ as.numeric(NA)
+    )) %>%
+    arrange(position, rownum) %>%
+    select(-rownum) %>%
+    mutate(value = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), round(value,0), round(value, 2))) %>%
+    mutate(value_m1 = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), value-1, value-0.01)) %>%
+    mutate(value_p1 = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), value+1, value+0.01)) %>%
+    group_by(Test, position) %>%
+    mutate(value_lead = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), lead(value)-1, format(round(lead(value)-0.01, 2), nsmall = 2))) %>%
+    mutate(value_m1_lead = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), lead(value_m1), format(round(lead(value_m1), 2), nsmall = 2))) %>%
+    mutate(value_p1_lead = ifelse(Test %in% c('Height', 'Weight', 'Vertical Jump', 'Broad Jump', 'Bench'), lead(value_p1), format(round(lead(value_p1), 2), nsmall = 2))) %>%
+    mutate(value_final = case_when(
+      Percentile == '<10' ~ paste0('<', value),
+      Percentile %in% c('10-19', '20-39', '40-59', '60-79', '80-89', '90-99') ~ paste0(format(value, nsmall = 0), '-', format(value_m1_lead, nsmall = 0)),
+      Percentile == '100' ~ paste0('\u2265', value),
+      TRUE ~ as.character(NA)
+    )) %>%
+    mutate(rownum = case_when(
+      Percentile == '<10' ~ 1,
+      Percentile == '10-19' ~ 2,
+      Percentile == '20-39' ~ 3,
+      Percentile == '40-59' ~ 4,
+      Percentile == '60-79' ~ 5,
+      Percentile == '80-89' ~ 6,
+      Percentile == '90-99' ~ 7,
+      Percentile == '100' ~ 8,
+      TRUE ~ as.numeric(NA)
+    )) %>%
+    arrange(Test, position, desc(rownum)) %>%
+    select(-rownum) %>%
+    mutate(across(everything(), as.character))
+
+  ex <- ex_fwd %>%
+    bind_rows(ex_rev) %>%
+    select(position, Test, Percentile, value_final) %>%
+    filter(position %in% positions) %>%
+    filter(Test == test) %>%
+    # filter(position %in% c('DB', 'DL', 'LB', 'OL', 'QB', 'RB', 'TE', 'WR')) %>%
+    # filter(Test == '40yd') %>%
+    pivot_wider(names_from = c(position), values_from = value_final) %>%
+    #mutate_if(is.numeric, round, digits=2) %>%
+    mutate(Class = case_when(
+      Percentile == '<10' ~ 'Bad',
+      Percentile == '10-19' ~ 'Very Poor',
+      Percentile == '20-39' ~ 'Poor',
+      Percentile == '40-59' ~ 'Fair',
+      Percentile == '60-79' ~ 'Good',
+      Percentile == '80-89' ~ 'Very Good',
+      Percentile == '90-99' ~ 'Excellent',
+      Percentile == '100' ~ 'World-Leading',
+      TRUE ~ as.character(NA)
+    )) %>%
+    mutate(rownum = case_when(
+      Percentile == '<10' ~ 1,
+      Percentile == '10-19' ~ 2,
+      Percentile == '20-39' ~ 3,
+      Percentile == '40-59' ~ 4,
+      Percentile == '60-79' ~ 5,
+      Percentile == '80-89' ~ 6,
+      Percentile == '90-99' ~ 7,
+      Percentile == '100' ~ 8,
       TRUE ~ as.numeric(NA)
     )) %>%
     arrange(desc(rownum)) %>%
@@ -121,12 +260,16 @@ benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL',
 
   table_perc <- ex %>%
     select(-Test) %>%
-    select(Percentile, Class, dplyr::everything()) %>%
+    select(Class, Percentile, dplyr::everything()) %>%
     gt() %>%
     tab_header(
       title = test,
       subtitle = 'Percentile by Position'
     ) %>%
+    # fmt_number(
+    #   columns = vars(!!!syms(positions)),
+    #   decimals = 2
+    # ) %>%
     cols_align(
       align = "center",
       columns = vars(Percentile, Class)
@@ -134,7 +277,7 @@ benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL',
     tab_source_note("Data Source: {combineR}/Pro Football Reference") %>%
     tab_header(
       title = md(paste0('**', test,' ',metric[1], '**')),
-      subtitle = "Percentile by Position"
+      subtitle = "Percentile by Position (NFL Combine)"
     ) %>%
     tab_style(
       style = list(
@@ -218,6 +361,20 @@ benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL',
       ),
       locations = list(
         cells_body(
+          columns = vars(Percentile)
+        )
+      )
+    ) %>%
+    tab_style(
+      style = list(
+        cell_borders(
+          sides = "left",
+          color = "lightgrey",
+          weight = px(2)
+        )
+      ),
+      locations = list(
+        cells_body(
           columns = vars(Class)
         )
       )
@@ -236,15 +393,25 @@ benchmark_table <- function(test = '40yd', positions = c('DB', 'DL', 'LB', 'OL',
         )
       )
     ) %>%
-  cols_align(
-    align = 'center',
-    columns = gt::everything()
-  )
+    tab_style(
+      style = list(
+        cell_borders(
+          sides = "right",
+          color = "lightgrey",
+          weight = px(2)
+        )
+      ),
+      locations = list(
+        cells_body(
+          columns = vars(!!!syms(positions))
+        )
+      )
+    ) %>%
+    cols_align(
+      align = 'center',
+      columns = gt::everything()
+    )
 
   print(table_perc)
 
-
-
-
 }
-

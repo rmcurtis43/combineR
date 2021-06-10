@@ -185,7 +185,6 @@ benchmark_table(test = 'Broad Jump', positions = c('LB'))
 ```
 <img src="man/images/percentile_table_example_single.png" align = center; width="500" />
 
-
 ***
 
 ## Citation
