@@ -21,7 +21,7 @@
 #' }
 
 
-pull_combine_data <- function(start_year = 2000, end_year = 2021) {
+pull_combine_data <- function(start_year = 2000, end_year = 2022) {
   combine_year_data <-  function(year) {
 
     data <- xml2::read_html(paste0("https://www.pro-football-reference.com/draft/",year,"-combine.htm")) %>%

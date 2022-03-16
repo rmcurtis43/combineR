@@ -4,7 +4,7 @@
 \alias{pull_combine_data}
 \title{Pull NFL Combine Data from Pro Football Reference}
 \usage{
-pull_combine_data(start_year = 2000, end_year = 2021)
+pull_combine_data(start_year = 2000, end_year = 2022)
 }
 \arguments{
 \item{start_year}{Year. Start year of data gather (e.g. 2020). Data is only available starting from the year 2000.  If no start_year or end_year is specific, data from 2000-current is pulled.}

@@ -6,7 +6,7 @@
 
 
 # {combineR}
-An R package to gather and explore NFL Draft Combine data.
+An R package for easily gathering and exploring NFL Draft Combine data.
 
 <img src="man/images/combineRsticker.png" align="right" width="300" />
 
