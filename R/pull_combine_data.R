@@ -100,15 +100,16 @@ pull_combine_data <- function(start_year = 2000, end_year = 2022) {
         TRUE ~ as.character(draft_team)
       )) %>%
       dplyr::select(-ht_ft, -ht_in) %>%
-      dplyr::select(player, draft_year, school, draft_team, draft_round, draft_overall_pick, position=pos, position2=pos2,
-             height_in=ht_total_in, height_ft_in,
-             weight_lbs = wt_lbs, weight_kg = wt_kg,
-             vertical_in, vertical_cm,
-             broad_jump_in, broad_jump_cm,
-             bench,
-             x3cone,
-             shuttle,
-             x40yd
+      dplyr::mutate(combine_year = year) %>%
+      dplyr::select(player, combine_year, draft_year, school, draft_team, draft_round, draft_overall_pick, position=pos, position2=pos2,
+                    height_in=ht_total_in, height_ft_in,
+                    weight_lbs = wt_lbs, weight_kg = wt_kg,
+                    vertical_in, vertical_cm,
+                    broad_jump_in, broad_jump_cm,
+                    bench,
+                    x3cone,
+                    shuttle,
+                    x40yd
       ) %>%
       dplyr::arrange(draft_overall_pick)
 
@@ -121,3 +122,4 @@ pull_combine_data <- function(start_year = 2000, end_year = 2022) {
     )
   return(data)
 }
+
