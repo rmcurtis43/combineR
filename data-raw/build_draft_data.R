@@ -123,5 +123,6 @@ draft_all <- draft_data_clean
 #write .rda file
 usethis::use_data(draft_all, overwrite = TRUE)
 
-
+# write RDS to data-raw for draft_data() function
+saveRDS(draft_all, "data-raw/draft_all.RDS")
 

@@ -17,9 +17,9 @@
 
 draft_data <- function(start_year = 1936, end_year = 2021) {
 
-  load("data/draft_all.rda")
+  #load("data/draft_all.rda")
 
-  data <- draft_all %>%
+  data <- readRDS(url("https://github.com/rmcurtis43/combineR/blob/main/data-raw/draft_all.RDS?raw=true")) %>%
     dplyr::filter(draft_year %in% c(start_year:end_year)) %>%
     dplyr::arrange(desc(draft_year), draft_overall_pick)
 

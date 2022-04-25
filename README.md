@@ -109,6 +109,36 @@ combine_data(2019, 2021)
 
 **Note:** Calling just `combine_data()` returns a tibble of all available data (i.e., 2000-current).
 
+
+***
+
+## `draft_data()` is available for pulling draft records 1936-current. The inputs and functionality are the same as `draft_data()` (i.e., start_year, end_year)
+
+``` r
+library(combineR)
+
+draft_data(start_year = 2019, end_year = 2021)
+
+`
+# A tibble: 770 x 11
+   draft_year draft_round draft_round_pick draft_overall_pick player  draft_team position team   player_image team_image conference_image 
+        <dbl>       <dbl>            <dbl>              <dbl> <chr>   <chr>      <chr>    <chr>  <chr>        <chr>      <chr>            
+ 1       2021           1                1                  1 Trevor~ Jaguars    QB       Clems~ https://sta~ http://a.~ https://sportslo~
+ 2       2021           1                2                  2 Zach W~ Jets       QB       Brigh~ http://stat~ http://a.~ https://sportslo~
+ 3       2021           1                3                  3 Trey L~ 49ers      QB       North~ https://sta~ https://i~ https://upload.w~
+ 4       2021           1                4                  4 Kyle P~ Falcons    TE       Flori~ https://sta~ http://a.~ https://upload.w~
+ 5       2021           1                5                  5 Ja'Mar~ Bengals    WR       Louis~ http://stat~ http://a.~ https://upload.w~
+ 6       2021           1                6                  6 Jaylen~ Dolphins   WR       Alaba~ https://sta~ http://a.~ https://upload.w~
+ 7       2021           1                7                  7 Penei ~ Lions      T        Oregon https://sta~ http://a.~ https://sportslo~
+ 8       2021           1                8                  8 Jaycee~ Panthers   DB       South~ https://sta~ http://a.~ https://upload.w~
+ 9       2021           1                9                  9 Patric~ Broncos    DB       Alaba~ http://stat~ http://a.~ https://upload.w~
+10       2021           1               10                 10 DeVont~ Eagles     WR       Alaba~ https://sta~ http://a.~ https://upload.w~
+# ... with 760 more rows
+`
+```
+
+**Note:** Calling just `draft_data()` returns a tibble of all available data (i.e., 1936-current).
+
 ***
 
 ## You can also still use `pull_combine_data()` for the original dataset with image links

@@ -17,9 +17,9 @@
 
 combine_data <- function(start_year = 2000, end_year = 2022) {
 
-  load("data/combine_all.rda")
+  #load("data/combine_all.rda")
 
-  data <- combine_all %>%
+  data <- readRDS(url("https://github.com/rmcurtis43/combineR/blob/main/data-raw/combine_all.RDS?raw=true")) %>%
     dplyr::filter(combine_year %in% c(start_year:end_year)) %>%
     dplyr::arrange(desc(combine_year), draft_overall_pick)
 

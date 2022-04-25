@@ -156,3 +156,6 @@ combine_all <- combine_clean %>%
 
 #write .rda file
 usethis::use_data(combine_all, overwrite = TRUE)
+
+# write RDS to data-raw for combine_data() function
+saveRDS(combine_all, "data-raw/combine_all.RDS")
