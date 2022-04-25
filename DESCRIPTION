@@ -1,10 +1,10 @@
 Package: combineR
 Type: Package
-Title: Package for Gathering and Exploring NFL Combine Data
-Version: 0.1.0
+Title: Package for Gathering and Exploring NFL Combine adn Draft Data
+Version: 0.1.2
 Author: Ryan Curtis
 Maintainer: Ryan Curtis <rmcurtis43@yahoo.com>
-Description: This package is used for gathering and exploring 2000 - current NFL combine data from Pro-Football-Reference. Pro-Football-Reference utilizes Official NFL data for current NFL seasons.
+Description: This package is used for gathering and exploring 2000 - current NFL combine data from Pro-Football-Reference and NFL draft data 1936 - Current from drafthistory.com. Pro-Football-Reference utilizes Official NFL data for current NFL seasons.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -20,3 +20,5 @@ Imports:
     janitor,
     stringr,
     gt
+Depends: 
+    R (>= 2.10)
