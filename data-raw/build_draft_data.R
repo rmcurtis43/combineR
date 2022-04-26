@@ -113,7 +113,7 @@ draft_data_clean <- draft_data_all %>%
     grepl("Louisiana-Lafayette	", team) ~ paste0("https://rebelnation1.s3.amazonaws.com/wp-content/uploads/2017/12/wsi-imageoptim-louisiana-lafayette-ragin-cajuns-logo.png"),
     TRUE ~ as.character(team_logo)
   )) %>%
-  select(draft_year, draft_round, draft_round_pick, draft_overall_pick, player, draft_team, position, team, player_image, team_image=team_logo, conference_image=url_conference)
+  select(draft_year, draft_round, draft_round_pick, draft_overall_pick, player, draft_team, position, team, conference, player_image, team_image=team_logo, conference_image=url_conference)
 
 
 draft_all <- draft_data_clean
